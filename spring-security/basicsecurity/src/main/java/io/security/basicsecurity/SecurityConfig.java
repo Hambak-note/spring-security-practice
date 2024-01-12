@@ -89,7 +89,20 @@ public class SecurityConfig {
                             .userDetailsService(userDetailsService);
                 });
 
+        http
+                .sessionManagement(session -> {
+                    session
+                            .maximumSessions(1)
+                            .maxSessionsPreventsLogin(true); //default 는 false
+                });
 
+        http
+                .sessionManagement(session -> {
+                    session
+                            .sessionFixation(sessionFixation -> {
+                                sessionFixation.changeSessionId();
+                            });
+                });
 
         return http.build();
     }
