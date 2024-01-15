@@ -1,38 +1,23 @@
 package io.security.basicsecurity;
 
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 
-//@Configuration
-//@EnableWebSecurity
-public class SecurityConfig3 {
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig4 {
+
 
     @Bean
-    @Order(0)
-    public SecurityFilterChain adminFilterChain(HttpSecurity http) throws Exception {
-
-        http
-                .securityMatcher("/admin/**")
-                .authorizeHttpRequests(auth -> {
-                    auth
-                            .anyRequest().authenticated();
-                });
-
-        http
-                .httpBasic(Customizer.withDefaults());
-
-        return http.build();
-    }
-
-    @Bean
-    @Order(1)
-    public SecurityFilterChain defaultFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
                 .authorizeHttpRequests(auth -> {
@@ -42,6 +27,9 @@ public class SecurityConfig3 {
 
         http
                 .formLogin(Customizer.withDefaults());
+
+
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 
         return http.build();
     }
