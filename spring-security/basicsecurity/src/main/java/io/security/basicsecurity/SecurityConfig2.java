@@ -23,8 +23,8 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 
 import java.io.IOException;
 
-@Configuration
-@EnableWebSecurity
+//@Configuration
+//@EnableWebSecurity
 public class SecurityConfig2 {
 
     @Bean
