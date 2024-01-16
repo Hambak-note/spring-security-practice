@@ -1,10 +1,12 @@
 package io.security.corespringsecurity.security.config;
 
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -27,11 +29,11 @@ public class SecurityConfig {
                 .build();
 
         UserDetails manager = User.withUsername("manager")
-                .password(password).roles("MANAGER")
+                .password(password).roles("MANAGER", "USER")
                 .build();
 
         UserDetails admin = User.withUsername("admin")
-                .password(password).roles("ADMIN")
+                .password(password).roles("ADMIN", "USER", "MANAGER")
                 .build();
 
         return new InMemoryUserDetailsManager(user, manager, admin);
@@ -40,6 +42,14 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    /**
+     * 프로젝트 내의 css, js 등의 정적 리소스를 무시하기 위한 설정
+     */
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 
     @Bean
