@@ -1,5 +1,6 @@
 package io.security.corespringsecurity.security.config;
 
+import io.security.corespringsecurity.security.handler.CustomAccessDeniedHandler;
 import io.security.corespringsecurity.security.provider.CustomAuthenticationProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
@@ -31,6 +34,9 @@ public class SecurityConfig {
 
     @Autowired
     private AuthenticationDetailsSource authenticationDetailsSource;
+
+    @Autowired
+    private AuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Autowired
     private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
@@ -95,7 +101,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authRequest -> {
                     authRequest
-                            .requestMatchers("/", "/users").permitAll()
+                            .requestMatchers("/", "/users", "user/login/**", "/login*").permitAll()
                             .requestMatchers("/mypage").hasRole("USER")
                             .requestMatchers("/messages").hasRole("MANAGER")
                             .requestMatchers("/config").hasRole("ADMIN")
@@ -108,9 +114,20 @@ public class SecurityConfig {
                             .authenticationDetailsSource(authenticationDetailsSource)
                             .defaultSuccessUrl("/")
                             .successHandler(customAuthenticationSuccessHandler)
+                            .failureHandler(customAuthenticationFailureHandler)
                             .permitAll();
-                });
+                })
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling
+                                .accessDeniedHandler(accessDeniedHandler()));
 
         return http.build();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        CustomAccessDeniedHandler accessDeniedHandler = new CustomAccessDeniedHandler();
+        accessDeniedHandler.setErrorPage("/denied");
+        return accessDeniedHandler;
     }
 }
