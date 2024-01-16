@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -26,6 +27,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @Slf4j
 public class SecurityConfig {
+
+    @Autowired
+    private AuthenticationDetailsSource authenticationDetailsSource;
 
 
 //    @Autowired
@@ -68,10 +72,6 @@ public class SecurityConfig {
 //        return new InMemoryUserDetailsManager(user, manager, admin);
 //    }
 
-
-
-
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -101,6 +101,7 @@ public class SecurityConfig {
                     formLogin
                             .loginPage("/login")
                             .loginProcessingUrl("/login_proc")
+                            .authenticationDetailsSource(authenticationDetailsSource)
                             .defaultSuccessUrl("/")
                             .permitAll();
                 });
