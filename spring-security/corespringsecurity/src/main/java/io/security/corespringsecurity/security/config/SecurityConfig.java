@@ -22,6 +22,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -30,6 +31,9 @@ public class SecurityConfig {
 
     @Autowired
     private AuthenticationDetailsSource authenticationDetailsSource;
+
+    @Autowired
+    private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
 
 //    @Autowired
@@ -103,6 +107,7 @@ public class SecurityConfig {
                             .loginProcessingUrl("/login_proc")
                             .authenticationDetailsSource(authenticationDetailsSource)
                             .defaultSuccessUrl("/")
+                            .successHandler(customAuthenticationSuccessHandler)
                             .permitAll();
                 });
 
