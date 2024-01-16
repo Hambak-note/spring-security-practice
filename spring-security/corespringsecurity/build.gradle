@@ -29,7 +29,6 @@ dependencies {
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	implementation 'org.modelmapper:modelmapper:2.4.2'
 	implementation 'org.springframework.boot:spring-boot-devtools'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
